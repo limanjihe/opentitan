@@ -35,3 +35,7 @@ for guidelines on how to contribute code to this repository.
 
 Unless otherwise noted, everything in this repository is covered by the Apache
 License, Version 2.0 (see [LICENSE](https://github.com/lowRISC/opentitan/blob/master/LICENSE) for full text).
+
+## Update
+
+add  branch  master-0327-based  for xbar 
