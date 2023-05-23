@@ -1156,68 +1156,258 @@ module otp_ctrl
       // Alert assertion for sparse FSM.
       `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartUnbufFsmCheck_A,
           u_part_unbuf.u_state_regs, alert_tx_o[1])
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    end else if (PartInfo[k].variant == Buffered) begin : gen_buffered
+    ///////////////////////////////////////3/////////////////////////////////////////////////////////
+    end else if (PartInfo[3].variant == Buffered) begin : gen_buffered
       otp_ctrl_part_buf #(
-        .Info(PartInfo[k]),
-        .DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
+        .Info(PartInfo[3]),
+        //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
+        .DataDefault(PartInvDefault[13951:13312])
       ) u_part_buf (
         .clk_i,
         .rst_ni,
         .init_req_i        ( part_init_req                   ),
-        .init_done_o       ( part_init_done[k]               ),
-        .integ_chk_req_i   ( integ_chk_req[k]                ),
-        .integ_chk_ack_o   ( integ_chk_ack[k]                ),
-        .cnsty_chk_req_i   ( cnsty_chk_req[k]                ),
-        .cnsty_chk_ack_o   ( cnsty_chk_ack[k]                ),
-        .escalate_en_i     ( lc_escalate_en[k]               ),
+        .init_done_o       ( part_init_done[3]               ),
+        .integ_chk_req_i   ( integ_chk_req[3]                ),
+        .integ_chk_ack_o   ( integ_chk_ack[3]                ),
+        .cnsty_chk_req_i   ( cnsty_chk_req[3]                ),
+        .cnsty_chk_ack_o   ( cnsty_chk_ack[3]                ),
+        .escalate_en_i     ( lc_escalate_en[3]               ),
         // Only supported by life cycle partition (see further below).
         .check_byp_en_i    ( lc_ctrl_pkg::Off                ),
-        .error_o           ( part_error[k]                   ),
-        .fsm_err_o         ( part_fsm_err[k]                 ),
-        .access_i          ( part_access[k]                  ),
-        .access_o          ( part_access_dai[k]              ),
-        .digest_o          ( part_digest[k]                  ),
-        .data_o            ( part_buf_data[PartInfo[k].offset +: PartInfo[k].size] ),
-        .otp_req_o         ( part_otp_arb_req[k]             ),
-        .otp_cmd_o         ( part_otp_arb_bundle[k].cmd      ),
-        .otp_size_o        ( part_otp_arb_bundle[k].size     ),
-        .otp_wdata_o       ( part_otp_arb_bundle[k].wdata    ),
-        .otp_addr_o        ( part_otp_arb_bundle[k].addr     ),
-        .otp_gnt_i         ( part_otp_arb_gnt[k]             ),
-        .otp_rvalid_i      ( part_otp_rvalid[k]              ),
+        .error_o           ( part_error[3]                   ),
+        .fsm_err_o         ( part_fsm_err[3]                 ),
+        .access_i          ( part_access[3]                  ),
+        .access_o          ( part_access_dai[3]              ),
+        .digest_o          ( part_digest[3]                  ),
+        .data_o            ( part_buf_data[PartInfo[3].offset +: PartInfo[3].size] ),
+        .otp_req_o         ( part_otp_arb_req[3]             ),
+        .otp_cmd_o         ( part_otp_arb_bundle[3].cmd      ),
+        .otp_size_o        ( part_otp_arb_bundle[3].size     ),
+        .otp_wdata_o       ( part_otp_arb_bundle[3].wdata    ),
+        .otp_addr_o        ( part_otp_arb_bundle[3].addr     ),
+        .otp_gnt_i         ( part_otp_arb_gnt[3]             ),
+        .otp_rvalid_i      ( part_otp_rvalid[3]              ),
         .otp_rdata_i       ( part_otp_rdata                  ),
         .otp_err_i         ( part_otp_err                    ),
-        .scrmbl_mtx_req_o  ( part_scrmbl_mtx_req[k]          ),
-        .scrmbl_mtx_gnt_i  ( part_scrmbl_mtx_gnt[k]          ),
-        .scrmbl_cmd_o      ( part_scrmbl_req_bundle[k].cmd   ),
-        .scrmbl_mode_o     ( part_scrmbl_req_bundle[k].mode  ),
-        .scrmbl_sel_o      ( part_scrmbl_req_bundle[k].sel   ),
-        .scrmbl_data_o     ( part_scrmbl_req_bundle[k].data  ),
-        .scrmbl_valid_o    ( part_scrmbl_req_bundle[k].valid ),
-        .scrmbl_ready_i    ( part_scrmbl_req_ready[k]        ),
-        .scrmbl_valid_i    ( part_scrmbl_rsp_valid[k]        ),
+        .scrmbl_mtx_req_o  ( part_scrmbl_mtx_req[3]          ),
+        .scrmbl_mtx_gnt_i  ( part_scrmbl_mtx_gnt[3]          ),
+        .scrmbl_cmd_o      ( part_scrmbl_req_bundle[3].cmd   ),
+        .scrmbl_mode_o     ( part_scrmbl_req_bundle[3].mode  ),
+        .scrmbl_sel_o      ( part_scrmbl_req_bundle[3].sel   ),
+        .scrmbl_data_o     ( part_scrmbl_req_bundle[3].data  ),
+        .scrmbl_valid_o    ( part_scrmbl_req_bundle[3].valid ),
+        .scrmbl_ready_i    ( part_scrmbl_req_ready[3]        ),
+        .scrmbl_valid_i    ( part_scrmbl_rsp_valid[3]        ),
         .scrmbl_data_i     ( part_scrmbl_rsp_data            )
       );
 
       // Buffered partitions are not accessible via the TL-UL window.
       logic unused_part_tlul_sigs;
-      assign unused_part_tlul_sigs = ^part_tlul_req[k];
-      assign part_tlul_gnt[k]    = 1'b0;
-      assign part_tlul_rerror[k] = '0;
-      assign part_tlul_rvalid[k] = 1'b0;
-      assign part_tlul_rdata[k]  = '0;
+      assign unused_part_tlul_sigs = ^part_tlul_req[3];
+      assign part_tlul_gnt[3]    = 1'b0;
+      assign part_tlul_rerror[3] = '0;
+      assign part_tlul_rvalid[3] = 1'b0;
+      assign part_tlul_rdata[3]  = '0;
 
       // Alert assertion for sparse FSM.
       `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartBufFsmCheck_A,
           u_part_buf.u_state_regs, alert_tx_o[1])
       `ASSERT_PRIM_COUNT_ERROR_TRIGGER_ALERT(CntPartBufCheck_A,
           u_part_buf.u_prim_count, alert_tx_o[1])
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    /////////////////////////////////////4///////////////////////////////////////////////////////////
+    end else if (PartInfo[4].variant == Buffered) begin : gen_buffered
+      otp_ctrl_part_buf #(
+        .Info(PartInfo[4]),
+        //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
+        .DataDefault(PartInvDefault[14271:13952])
+      ) u_part_buf (
+        .clk_i,
+        .rst_ni,
+        .init_req_i        ( part_init_req                   ),
+        .init_done_o       ( part_init_done[4]               ),
+        .integ_chk_req_i   ( integ_chk_req[4]                ),
+        .integ_chk_ack_o   ( integ_chk_ack[4]                ),
+        .cnsty_chk_req_i   ( cnsty_chk_req[4]                ),
+        .cnsty_chk_ack_o   ( cnsty_chk_ack[4]                ),
+        .escalate_en_i     ( lc_escalate_en[4]               ),
+        // Only supported by life cycle partition (see further below).
+        .check_byp_en_i    ( lc_ctrl_pkg::Off                ),
+        .error_o           ( part_error[4]                   ),
+        .fsm_err_o         ( part_fsm_err[4]                 ),
+        .access_i          ( part_access[4]                  ),
+        .access_o          ( part_access_dai[4]              ),
+        .digest_o          ( part_digest[4]                  ),
+        .data_o            ( part_buf_data[PartInfo[4].offset +: PartInfo[4].size] ),
+        .otp_req_o         ( part_otp_arb_req[4]             ),
+        .otp_cmd_o         ( part_otp_arb_bundle[4].cmd      ),
+        .otp_size_o        ( part_otp_arb_bundle[4].size     ),
+        .otp_wdata_o       ( part_otp_arb_bundle[4].wdata    ),
+        .otp_addr_o        ( part_otp_arb_bundle[4].addr     ),
+        .otp_gnt_i         ( part_otp_arb_gnt[4]             ),
+        .otp_rvalid_i      ( part_otp_rvalid[4]              ),
+        .otp_rdata_i       ( part_otp_rdata                  ),
+        .otp_err_i         ( part_otp_err                    ),
+        .scrmbl_mtx_req_o  ( part_scrmbl_mtx_req[4]          ),
+        .scrmbl_mtx_gnt_i  ( part_scrmbl_mtx_gnt[4]          ),
+        .scrmbl_cmd_o      ( part_scrmbl_req_bundle[4].cmd   ),
+        .scrmbl_mode_o     ( part_scrmbl_req_bundle[4].mode  ),
+        .scrmbl_sel_o      ( part_scrmbl_req_bundle[4].sel   ),
+        .scrmbl_data_o     ( part_scrmbl_req_bundle[4].data  ),
+        .scrmbl_valid_o    ( part_scrmbl_req_bundle[4].valid ),
+        .scrmbl_ready_i    ( part_scrmbl_req_ready[4]        ),
+        .scrmbl_valid_i    ( part_scrmbl_rsp_valid[4]        ),
+        .scrmbl_data_i     ( part_scrmbl_rsp_data            )
+      );
+
+      // Buffered partitions are not accessible via the TL-UL window.
+      logic unused_part_tlul_sigs;
+      assign unused_part_tlul_sigs = ^part_tlul_req[4];
+      assign part_tlul_gnt[4]    = 1'b0;
+      assign part_tlul_rerror[4] = '0;
+      assign part_tlul_rvalid[4] = 1'b0;
+      assign part_tlul_rdata[4]  = '0;
+
+      // Alert assertion for sparse FSM.
+      `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartBufFsmCheck_A,
+          u_part_buf.u_state_regs, alert_tx_o[1])
+      `ASSERT_PRIM_COUNT_ERROR_TRIGGER_ALERT(CntPartBufCheck_A,
+          u_part_buf.u_prim_count, alert_tx_o[1])
+
+
+    //////////////////////////////5//////////////////////////////////////////////////////////////////
+    end else if (PartInfo[5].variant == Buffered) begin : gen_buffered
+      otp_ctrl_part_buf #(
+        .Info(PartInfo[5]),
+        //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
+        .DataDefault(PartInvDefault[14975:14272])
+      ) u_part_buf (
+        .clk_i,
+        .rst_ni,
+        .init_req_i        ( part_init_req                   ),
+        .init_done_o       ( part_init_done[5]               ),
+        .integ_chk_req_i   ( integ_chk_req[5]                ),
+        .integ_chk_ack_o   ( integ_chk_ack[5]                ),
+        .cnsty_chk_req_i   ( cnsty_chk_req[5]                ),
+        .cnsty_chk_ack_o   ( cnsty_chk_ack[5]                ),
+        .escalate_en_i     ( lc_escalate_en[5]               ),
+        // Only supported by life cycle partition (see further below).
+        .check_byp_en_i    ( lc_ctrl_pkg::Off                ),
+        .error_o           ( part_error[5]                   ),
+        .fsm_err_o         ( part_fsm_err[5]                 ),
+        .access_i          ( part_access[5]                  ),
+        .access_o          ( part_access_dai[5]              ),
+        .digest_o          ( part_digest[5]                  ),
+        .data_o            ( part_buf_data[PartInfo[5].offset +: PartInfo[5].size] ),
+        .otp_req_o         ( part_otp_arb_req[5]             ),
+        .otp_cmd_o         ( part_otp_arb_bundle[5].cmd      ),
+        .otp_size_o        ( part_otp_arb_bundle[5].size     ),
+        .otp_wdata_o       ( part_otp_arb_bundle[5].wdata    ),
+        .otp_addr_o        ( part_otp_arb_bundle[5].addr     ),
+        .otp_gnt_i         ( part_otp_arb_gnt[5]             ),
+        .otp_rvalid_i      ( part_otp_rvalid[5]              ),
+        .otp_rdata_i       ( part_otp_rdata                  ),
+        .otp_err_i         ( part_otp_err                    ),
+        .scrmbl_mtx_req_o  ( part_scrmbl_mtx_req[5]          ),
+        .scrmbl_mtx_gnt_i  ( part_scrmbl_mtx_gnt[5]          ),
+        .scrmbl_cmd_o      ( part_scrmbl_req_bundle[5].cmd   ),
+        .scrmbl_mode_o     ( part_scrmbl_req_bundle[5].mode  ),
+        .scrmbl_sel_o      ( part_scrmbl_req_bundle[5].sel   ),
+        .scrmbl_data_o     ( part_scrmbl_req_bundle[5].data  ),
+        .scrmbl_valid_o    ( part_scrmbl_req_bundle[5].valid ),
+        .scrmbl_ready_i    ( part_scrmbl_req_ready[5]        ),
+        .scrmbl_valid_i    ( part_scrmbl_rsp_valid[5]        ),
+        .scrmbl_data_i     ( part_scrmbl_rsp_data            )
+      );
+
+      // Buffered partitions are not accessible via the TL-UL window.
+      logic unused_part_tlul_sigs;
+      assign unused_part_tlul_sigs = ^part_tlul_req[5];
+      assign part_tlul_gnt[5]    = 1'b0;
+      assign part_tlul_rerror[5] = '0;
+      assign part_tlul_rvalid[5] = 1'b0;
+      assign part_tlul_rdata[5]  = '0;
+
+      // Alert assertion for sparse FSM.
+      `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartBufFsmCheck_A,
+          u_part_buf.u_state_regs, alert_tx_o[1])
+      `ASSERT_PRIM_COUNT_ERROR_TRIGGER_ALERT(CntPartBufCheck_A,
+          u_part_buf.u_prim_count, alert_tx_o[1])
+
+
+
+
+    ///////////////////////////////6/////////////////////////////////////////////////////////////////
+    end else if (PartInfo[6].variant == Buffered) begin : gen_buffered
+      otp_ctrl_part_buf #(
+        .Info(PartInfo[6]),
+        //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
+        .DataDefault(PartInvDefault[15679:14976])
+      ) u_part_buf (
+        .clk_i,
+        .rst_ni,
+        .init_req_i        ( part_init_req                   ),
+        .init_done_o       ( part_init_done[6]               ),
+        .integ_chk_req_i   ( integ_chk_req[6]                ),
+        .integ_chk_ack_o   ( integ_chk_ack[6]                ),
+        .cnsty_chk_req_i   ( cnsty_chk_req[6]                ),
+        .cnsty_chk_ack_o   ( cnsty_chk_ack[6]                ),
+        .escalate_en_i     ( lc_escalate_en[6]               ),
+        // Only supported by life cycle partition (see further below).
+        .check_byp_en_i    ( lc_ctrl_pkg::Off                ),
+        .error_o           ( part_error[6]                   ),
+        .fsm_err_o         ( part_fsm_err[6]                 ),
+        .access_i          ( part_access[6]                  ),
+        .access_o          ( part_access_dai[6]              ),
+        .digest_o          ( part_digest[6]                  ),
+        .data_o            ( part_buf_data[PartInfo[6].offset +: PartInfo[6].size] ),
+        .otp_req_o         ( part_otp_arb_req[6]             ),
+        .otp_cmd_o         ( part_otp_arb_bundle[6].cmd      ),
+        .otp_size_o        ( part_otp_arb_bundle[6].size     ),
+        .otp_wdata_o       ( part_otp_arb_bundle[6].wdata    ),
+        .otp_addr_o        ( part_otp_arb_bundle[6].addr     ),
+        .otp_gnt_i         ( part_otp_arb_gnt[6]             ),
+        .otp_rvalid_i      ( part_otp_rvalid[6]              ),
+        .otp_rdata_i       ( part_otp_rdata                  ),
+        .otp_err_i         ( part_otp_err                    ),
+        .scrmbl_mtx_req_o  ( part_scrmbl_mtx_req[6]          ),
+        .scrmbl_mtx_gnt_i  ( part_scrmbl_mtx_gnt[6]          ),
+        .scrmbl_cmd_o      ( part_scrmbl_req_bundle[6].cmd   ),
+        .scrmbl_mode_o     ( part_scrmbl_req_bundle[6].mode  ),
+        .scrmbl_sel_o      ( part_scrmbl_req_bundle[6].sel   ),
+        .scrmbl_data_o     ( part_scrmbl_req_bundle[6].data  ),
+        .scrmbl_valid_o    ( part_scrmbl_req_bundle[6].valid ),
+        .scrmbl_ready_i    ( part_scrmbl_req_ready[6]        ),
+        .scrmbl_valid_i    ( part_scrmbl_rsp_valid[6]        ),
+        .scrmbl_data_i     ( part_scrmbl_rsp_data            )
+      );
+
+      // Buffered partitions are not accessible via the TL-UL window.
+      logic unused_part_tlul_sigs;
+      assign unused_part_tlul_sigs = ^part_tlul_req[6];
+      assign part_tlul_gnt[6]    = 1'b0;
+      assign part_tlul_rerror[6] = '0;
+      assign part_tlul_rvalid[6] = 1'b0;
+      assign part_tlul_rdata[6]  = '0;
+
+      // Alert assertion for sparse FSM.
+      `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartBufFsmCheck_A,
+          u_part_buf.u_state_regs, alert_tx_o[1])
+      `ASSERT_PRIM_COUNT_ERROR_TRIGGER_ALERT(CntPartBufCheck_A,
+          u_part_buf.u_prim_count, alert_tx_o[1])
+
+
+
+
+
+    /////////////////////////////7///////////////////////////////////////////////////////////////////
     end else if (PartInfo[k].variant == LifeCycle) begin : gen_lifecycle
       otp_ctrl_part_buf #(
         .Info(PartInfo[k]),
-        .DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
+        //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
+        .DataDefault(PartInvDefault[16383:15680])
       ) u_part_buf (
         .clk_i,
         .rst_ni,
