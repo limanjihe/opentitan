@@ -12,7 +12,8 @@
   tb: tb
 
   // Simulator used to sign off this block
-  tool: xcelium
+  //tool: xcelium
+  tool: vcs
 
   // Fusesoc core file used for building the file list.
   fusesoc_core: lowrisc:dv:aes_sim:0.1
@@ -45,7 +46,7 @@
               "aes_err_injection_bind"]
 
 
-  xcelium_cov_refine_files: []
+  //xcelium_cov_refine_files: []
 
   // Default iterations for all tests - each test entry can override this.
   reseed: 50
