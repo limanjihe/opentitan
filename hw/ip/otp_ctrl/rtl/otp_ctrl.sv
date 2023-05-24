@@ -1101,63 +1101,183 @@ module otp_ctrl
 
   logic [$bits(PartInvDefault)/8-1:0][7:0] part_buf_data;
 
-  for (genvar k = 0; k < NumPart; k ++) begin : gen_partitions
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    if (PartInfo[k].variant == Unbuffered) begin : gen_unbuffered
+ // for (genvar k = 0; k < NumPart; k ++) begin : gen_partitions
+    /////////////////////0///////////////////////////////////////////////////////////////////////////
+    if (PartInfo[0].variant == Unbuffered) begin : gen_unbuffered0
       otp_ctrl_part_unbuf #(
-        .Info(PartInfo[k])
+        .Info(PartInfo[0])
       ) u_part_unbuf (
         .clk_i,
         .rst_ni,
         .init_req_i    ( part_init_req                ),
-        .init_done_o   ( part_init_done[k]            ),
-        .escalate_en_i ( lc_escalate_en[k]            ),
-        .error_o       ( part_error[k]                ),
-        .fsm_err_o     ( part_fsm_err[k]              ),
-        .access_i      ( part_access[k]               ),
-        .access_o      ( part_access_dai[k]           ),
-        .digest_o      ( part_digest[k]               ),
-        .tlul_req_i    ( part_tlul_req[k]             ),
-        .tlul_gnt_o    ( part_tlul_gnt[k]             ),
+        .init_done_o   ( part_init_done[0]            ),
+        .escalate_en_i ( lc_escalate_en[0]            ),
+        .error_o       ( part_error[0]                ),
+        .fsm_err_o     ( part_fsm_err[0]              ),
+        .access_i      ( part_access[0]               ),
+        .access_o      ( part_access_dai[0]           ),
+        .digest_o      ( part_digest[0]               ),
+        .tlul_req_i    ( part_tlul_req[0]             ),
+        .tlul_gnt_o    ( part_tlul_gnt[0]             ),
         .tlul_addr_i   ( part_tlul_addr               ),
-        .tlul_rerror_o ( part_tlul_rerror[k]          ),
-        .tlul_rvalid_o ( part_tlul_rvalid[k]          ),
-        .tlul_rdata_o  ( part_tlul_rdata[k]           ),
-        .otp_req_o     ( part_otp_arb_req[k]          ),
-        .otp_cmd_o     ( part_otp_arb_bundle[k].cmd   ),
-        .otp_size_o    ( part_otp_arb_bundle[k].size  ),
-        .otp_wdata_o   ( part_otp_arb_bundle[k].wdata ),
-        .otp_addr_o    ( part_otp_arb_bundle[k].addr  ),
-        .otp_gnt_i     ( part_otp_arb_gnt[k]          ),
-        .otp_rvalid_i  ( part_otp_rvalid[k]           ),
+        .tlul_rerror_o ( part_tlul_rerror[0]          ),
+        .tlul_rvalid_o ( part_tlul_rvalid[0]          ),
+        .tlul_rdata_o  ( part_tlul_rdata[0]           ),
+        .otp_req_o     ( part_otp_arb_req[0]          ),
+        .otp_cmd_o     ( part_otp_arb_bundle[0].cmd   ),
+        .otp_size_o    ( part_otp_arb_bundle[0].size  ),
+        .otp_wdata_o   ( part_otp_arb_bundle[0].wdata ),
+        .otp_addr_o    ( part_otp_arb_bundle[0].addr  ),
+        .otp_gnt_i     ( part_otp_arb_gnt[0]          ),
+        .otp_rvalid_i  ( part_otp_rvalid[0]           ),
         .otp_rdata_i   ( part_otp_rdata               ),
         .otp_err_i     ( part_otp_err                 )
       );
 
       // Tie off unused connections.
-      assign part_scrmbl_mtx_req[k]    = '0;
-      assign part_scrmbl_req_bundle[k] = '0;
+      assign part_scrmbl_mtx_req[0]    = '0;
+      assign part_scrmbl_req_bundle[0] = '0;
       // These checks do not exist in this partition type,
       // so we always acknowledge the request.
-      assign integ_chk_ack[k]          = 1'b1;
-      assign cnsty_chk_ack[k]          = 1'b1;
+      assign integ_chk_ack[0]          = 1'b1;
+      assign cnsty_chk_ack[0]          = 1'b1;
 
       // No buffered data to expose.
-      assign part_buf_data[PartInfo[k].offset +: PartInfo[k].size] = '0;
+      assign part_buf_data[PartInfo[0].offset +: PartInfo[0].size] = '0;
 
       // This stops lint from complaining about unused signals.
       logic unused_part_scrmbl_sigs;
-      assign unused_part_scrmbl_sigs = ^{part_scrmbl_mtx_gnt[k],
-                                         part_scrmbl_req_ready[k],
-                                         part_scrmbl_rsp_valid[k],
-                                         integ_chk_req[k],
-                                         cnsty_chk_req[k]};
+      assign unused_part_scrmbl_sigs = ^{part_scrmbl_mtx_gnt[0],
+                                         part_scrmbl_req_ready[0],
+                                         part_scrmbl_rsp_valid[0],
+                                         integ_chk_req[0],
+                                         cnsty_chk_req[0]};
 
       // Alert assertion for sparse FSM.
       `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartUnbufFsmCheck_A,
           u_part_unbuf.u_state_regs, alert_tx_o[1])
+
+
+
+
+    /////////////////////1//////////////////////////////////////////////////////////////////////////
+    end else if(PartInfo[1].variant == Unbuffered) begin : gen_unbuffered1
+      otp_ctrl_part_unbuf #(
+        .Info(PartInfo[1])
+      ) u_part_unbuf (
+        .clk_i,
+        .rst_ni,
+        .init_req_i    ( part_init_req                ),
+        .init_done_o   ( part_init_done[1]            ),
+        .escalate_en_i ( lc_escalate_en[1]            ),
+        .error_o       ( part_error[1]                ),
+        .fsm_err_o     ( part_fsm_err[1]              ),
+        .access_i      ( part_access[1]               ),
+        .access_o      ( part_access_dai[1]           ),
+        .digest_o      ( part_digest[1]               ),
+        .tlul_req_i    ( part_tlul_req[1]             ),
+        .tlul_gnt_o    ( part_tlul_gnt[1]             ),
+        .tlul_addr_i   ( part_tlul_addr               ),
+        .tlul_rerror_o ( part_tlul_rerror[1]          ),
+        .tlul_rvalid_o ( part_tlul_rvalid[1]          ),
+        .tlul_rdata_o  ( part_tlul_rdata[1]           ),
+        .otp_req_o     ( part_otp_arb_req[1]          ),
+        .otp_cmd_o     ( part_otp_arb_bundle[1].cmd   ),
+        .otp_size_o    ( part_otp_arb_bundle[1].size  ),
+        .otp_wdata_o   ( part_otp_arb_bundle[1].wdata ),
+        .otp_addr_o    ( part_otp_arb_bundle[1].addr  ),
+        .otp_gnt_i     ( part_otp_arb_gnt[1]          ),
+        .otp_rvalid_i  ( part_otp_rvalid[1]           ),
+        .otp_rdata_i   ( part_otp_rdata               ),
+        .otp_err_i     ( part_otp_err                 )
+      );
+
+      // Tie off unused connections.
+      assign part_scrmbl_mtx_req[1]    = '0;
+      assign part_scrmbl_req_bundle[1] = '0;
+      // These checks do not exist in this partition type,
+      // so we always acknowledge the request.
+      assign integ_chk_ack[1]          = 1'b1;
+      assign cnsty_chk_ack[1]          = 1'b1;
+
+      // No buffered data to expose.
+      assign part_buf_data[PartInfo[1].offset +: PartInfo[1].size] = '0;
+
+      // This stops lint from complaining about unused signals.
+      logic unused_part_scrmbl_sigs;
+      assign unused_part_scrmbl_sigs = ^{part_scrmbl_mtx_gnt[1],
+                                         part_scrmbl_req_ready[1],
+                                         part_scrmbl_rsp_valid[1],
+                                         integ_chk_req[1],
+                                         cnsty_chk_req[1]};
+
+      // Alert assertion for sparse FSM.
+      `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartUnbufFsmCheck_A,
+          u_part_unbuf.u_state_regs, alert_tx_o[1])
+
+
+
+
+
+    //////////////////////2//////////////////////////////////////////////////////////////////////////
+   end else if (PartInfo[2].variant == Unbuffered) begin : gen_unbuffered2
+      otp_ctrl_part_unbuf #(
+        .Info(PartInfo[2])
+      ) u_part_unbuf (
+        .clk_i,
+        .rst_ni,
+        .init_req_i    ( part_init_req                ),
+        .init_done_o   ( part_init_done[2]            ),
+        .escalate_en_i ( lc_escalate_en[2]            ),
+        .error_o       ( part_error[2]                ),
+        .fsm_err_o     ( part_fsm_err[2]              ),
+        .access_i      ( part_access[2]               ),
+        .access_o      ( part_access_dai[2]           ),
+        .digest_o      ( part_digest[2]               ),
+        .tlul_req_i    ( part_tlul_req[2]             ),
+        .tlul_gnt_o    ( part_tlul_gnt[2]             ),
+        .tlul_addr_i   ( part_tlul_addr               ),
+        .tlul_rerror_o ( part_tlul_rerror[2]          ),
+        .tlul_rvalid_o ( part_tlul_rvalid[2]          ),
+        .tlul_rdata_o  ( part_tlul_rdata[2]           ),
+        .otp_req_o     ( part_otp_arb_req[2]          ),
+        .otp_cmd_o     ( part_otp_arb_bundle[2].cmd   ),
+        .otp_size_o    ( part_otp_arb_bundle[2].size  ),
+        .otp_wdata_o   ( part_otp_arb_bundle[2].wdata ),
+        .otp_addr_o    ( part_otp_arb_bundle[2].addr  ),
+        .otp_gnt_i     ( part_otp_arb_gnt[2]          ),
+        .otp_rvalid_i  ( part_otp_rvalid[2]           ),
+        .otp_rdata_i   ( part_otp_rdata               ),
+        .otp_err_i     ( part_otp_err                 )
+      );
+
+      // Tie off unused connections.
+      assign part_scrmbl_mtx_req[2]    = '0;
+      assign part_scrmbl_req_bundle[2] = '0;
+      // These checks do not exist in this partition type,
+      // so we always acknowledge the request.
+      assign integ_chk_ack[2]          = 1'b1;
+      assign cnsty_chk_ack[2]          = 1'b1;
+
+      // No buffered data to expose.
+      assign part_buf_data[PartInfo[2].offset +: PartInfo[2].size] = '0;
+
+      // This stops lint from complaining about unused signals.
+      logic unused_part_scrmbl_sigs;
+      assign unused_part_scrmbl_sigs = ^{part_scrmbl_mtx_gnt[2],
+                                         part_scrmbl_req_ready[2],
+                                         part_scrmbl_rsp_valid[2],
+                                         integ_chk_req[2],
+                                         cnsty_chk_req[2]};
+
+      // Alert assertion for sparse FSM.
+      `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartUnbufFsmCheck_A,
+          u_part_unbuf.u_state_regs, alert_tx_o[1])
+
+
+
     ///////////////////////////////////////3/////////////////////////////////////////////////////////
-    end else if (PartInfo[3].variant == Buffered) begin : gen_buffered
+    end else if (PartInfo[3].variant == Buffered) begin : gen_buffered3
       otp_ctrl_part_buf #(
         .Info(PartInfo[3]),
         //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
@@ -1218,7 +1338,7 @@ module otp_ctrl
 
 
     /////////////////////////////////////4///////////////////////////////////////////////////////////
-    end else if (PartInfo[4].variant == Buffered) begin : gen_buffered
+    end else if (PartInfo[4].variant == Buffered) begin : gen_buffered4
       otp_ctrl_part_buf #(
         .Info(PartInfo[4]),
         //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
@@ -1278,7 +1398,7 @@ module otp_ctrl
 
 
     //////////////////////////////5//////////////////////////////////////////////////////////////////
-    end else if (PartInfo[5].variant == Buffered) begin : gen_buffered
+    end else if (PartInfo[5].variant == Buffered) begin : gen_buffered5
       otp_ctrl_part_buf #(
         .Info(PartInfo[5]),
         //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
@@ -1340,7 +1460,7 @@ module otp_ctrl
 
 
     ///////////////////////////////6/////////////////////////////////////////////////////////////////
-    end else if (PartInfo[6].variant == Buffered) begin : gen_buffered
+    end else if (PartInfo[6].variant == Buffered) begin : gen_buffered6
       otp_ctrl_part_buf #(
         .Info(PartInfo[6]),
         //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
@@ -1403,38 +1523,38 @@ module otp_ctrl
 
 
     /////////////////////////////7///////////////////////////////////////////////////////////////////
-    end else if (PartInfo[k].variant == LifeCycle) begin : gen_lifecycle
+    end else if (PartInfo[7].variant == LifeCycle) begin : gen_lifecycle
       otp_ctrl_part_buf #(
-        .Info(PartInfo[k]),
+        .Info(PartInfo[7]),
         //.DataDefault(PartInvDefault[PartInfo[k].offset*8 +: PartInfo[k].size*8])
         .DataDefault(PartInvDefault[16383:15680])
       ) u_part_buf (
         .clk_i,
         .rst_ni,
         .init_req_i        ( part_init_req                   ),
-        .init_done_o       ( part_init_done[k]               ),
-        .integ_chk_req_i   ( integ_chk_req[k]                ),
-        .integ_chk_ack_o   ( integ_chk_ack[k]                ),
-        .cnsty_chk_req_i   ( cnsty_chk_req[k]                ),
-        .cnsty_chk_ack_o   ( cnsty_chk_ack[k]                ),
-        .escalate_en_i     ( lc_escalate_en[k]               ),
+        .init_done_o       ( part_init_done[7]               ),
+        .integ_chk_req_i   ( integ_chk_req[7]                ),
+        .integ_chk_ack_o   ( integ_chk_ack[7]                ),
+        .cnsty_chk_req_i   ( cnsty_chk_req[7]                ),
+        .cnsty_chk_ack_o   ( cnsty_chk_ack[7]                ),
+        .escalate_en_i     ( lc_escalate_en[7]               ),
         // This is only supported by the life cycle partition. We need to prevent this partition
         // from escalating once the life cycle state in memory is being updated (and hence not
         // consistent with the values in the buffer regs anymore).
         .check_byp_en_i    ( lc_check_byp_en                 ),
-        .error_o           ( part_error[k]                   ),
-        .fsm_err_o         ( part_fsm_err[k]                 ),
-        .access_i          ( part_access[k]                  ),
-        .access_o          ( part_access_dai[k]              ),
-        .digest_o          ( part_digest[k]                  ),
-        .data_o            ( part_buf_data[PartInfo[k].offset +: PartInfo[k].size] ),
-        .otp_req_o         ( part_otp_arb_req[k]             ),
-        .otp_cmd_o         ( part_otp_arb_bundle[k].cmd      ),
-        .otp_size_o        ( part_otp_arb_bundle[k].size     ),
-        .otp_wdata_o       ( part_otp_arb_bundle[k].wdata    ),
-        .otp_addr_o        ( part_otp_arb_bundle[k].addr     ),
-        .otp_gnt_i         ( part_otp_arb_gnt[k]             ),
-        .otp_rvalid_i      ( part_otp_rvalid[k]              ),
+        .error_o           ( part_error[7]                   ),
+        .fsm_err_o         ( part_fsm_err[7]                 ),
+        .access_i          ( part_access[7]                  ),
+        .access_o          ( part_access_dai[7]              ),
+        .digest_o          ( part_digest[7]                  ),
+        .data_o            ( part_buf_data[PartInfo[7].offset +: PartInfo[7].size] ),
+        .otp_req_o         ( part_otp_arb_req[7]             ),
+        .otp_cmd_o         ( part_otp_arb_bundle[7].cmd      ),
+        .otp_size_o        ( part_otp_arb_bundle[7].size     ),
+        .otp_wdata_o       ( part_otp_arb_bundle[7].wdata    ),
+        .otp_addr_o        ( part_otp_arb_bundle[7].addr     ),
+        .otp_gnt_i         ( part_otp_arb_gnt[7]             ),
+        .otp_rvalid_i      ( part_otp_rvalid[7]              ),
         .otp_rdata_i       ( part_otp_rdata                  ),
         .otp_err_i         ( part_otp_err                    ),
         // The LC partition does not need any scrambling features.
@@ -1452,21 +1572,21 @@ module otp_ctrl
 
       // Buffered partitions are not accessible via the TL-UL window.
       logic unused_part_tlul_sigs;
-      assign unused_part_tlul_sigs = ^part_tlul_req[k];
-      assign part_tlul_gnt[k]    = 1'b0;
-      assign part_tlul_rerror[k] = '0;
-      assign part_tlul_rvalid[k] = 1'b0;
-      assign part_tlul_rdata[k]  = '0;
+      assign unused_part_tlul_sigs = ^part_tlul_req[7];
+      assign part_tlul_gnt[7]    = 1'b0;
+      assign part_tlul_rerror[7] = '0;
+      assign part_tlul_rvalid[7] = 1'b0;
+      assign part_tlul_rdata[7]  = '0;
 
       // Tie off unused connections.
-      assign part_scrmbl_mtx_req[k]    = '0;
-      assign part_scrmbl_req_bundle[k] = '0;
+      assign part_scrmbl_mtx_req[7]    = '0;
+      assign part_scrmbl_req_bundle[7] = '0;
 
       // This stops lint from complaining about unused signals.
       logic unused_part_scrmbl_sigs;
-      assign unused_part_scrmbl_sigs = ^{part_scrmbl_mtx_gnt[k],
-                                         part_scrmbl_req_ready[k],
-                                         part_scrmbl_rsp_valid[k]};
+      assign unused_part_scrmbl_sigs = ^{part_scrmbl_mtx_gnt[7],
+                                         part_scrmbl_req_ready[7],
+                                         part_scrmbl_rsp_valid[7]};
       // Alert assertion for sparse FSM.
       `ASSERT_PRIM_FSM_ERROR_TRIGGER_ALERT(CtrlPartLcFsmCheck_A,
           u_part_buf.u_state_regs, alert_tx_o[1])
@@ -1478,7 +1598,7 @@ module otp_ctrl
       assert_static_in_generate_invalid assert_static_in_generate_invalid();
     end
     ////////////////////////////////////////////////////////////////////////////////////////////////
-  end
+ // end
 
   //////////////////////////////////
   // Buffered Data Output Mapping //
