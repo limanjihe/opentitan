@@ -1,0 +1,6 @@
++incdir+../rtl/autogen
+#../rtl/autogen/tl_main_pkg.sv
+../dv/autogen/xbar_env_pkg__params.sv
+../dv/autogen/xbar_main_bind.sv
+../rtl/autogen/xbar_main.sv
+../dv/autogen/tb__xbar_connect.sv
